@@ -7,9 +7,21 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="ir.omidrezabagherian.quiz3app.ProfileFragment"
-        android:label="ProfileFragment" />
+        android:label="ProfileFragment" >
+        <action
+            android:id="@+id/action_profileFragment_to_uploadImageFragment"
+            app:destination="@id/uploadImageFragment" />
+    </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="ir.omidrezabagherian.quiz3app.SearchFragment"
+        android:name="ir.omidrezabagherian.quiz3app.ListFragment"
         android:label="SearchFragment" />
+    <fragment
+        android:id="@+id/uploadImageFragment"
+        android:name="ir.omidrezabagherian.quiz3app.UploadImageFragment"
+        android:label="UploadImageFragment" >
+        <argument
+            android:name="token"
+            app:argType="string" />
+    </fragment>
 </navigation>

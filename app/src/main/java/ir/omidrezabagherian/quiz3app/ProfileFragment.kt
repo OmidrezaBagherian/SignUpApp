@@ -5,6 +5,8 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import ir.omidrezabagherian.quiz3app.databinding.FragmentProfileBinding
 import ir.omidrezabagherian.testapplicationfive.Data.NetworkManager
 import retrofit2.Call
@@ -13,11 +15,16 @@ import retrofit2.Response
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
     lateinit var profileBinding: FragmentProfileBinding
-
+    lateinit var navController: NavController
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         profileBinding = FragmentProfileBinding.bind(view)
+
+        val navHostFragment =
+            activity!!.supportFragmentManager.findFragmentById(R.id.fragmentContainerViewMain) as NavHostFragment
+
+        navController = navHostFragment.navController
 
         val listHobbies = mutableListOf<String>()
 
@@ -110,10 +117,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             val name = profileBinding.edittextName.text.toString()
             val family = profileBinding.edittextFamily.text.toString()
             val nationalCode = profileBinding.edittextNationalCode.text.toString()
-            Log.i("AppMan", name)
-            Log.i("AppMan", family)
-            Log.i("AppMan", nationalCode)
-            Log.i("AppMan", CreateUser(name, family, nationalCode, listHobbies).toString())
+
             NetworkManager.userService.createUser(
                 CreateUser(
                     name,
@@ -125,10 +129,15 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 .enqueue(object : Callback<String> {
                     override fun onResponse(call: Call<String>, response: Response<String>) {
                         Toast.makeText(requireContext(), "موفقیت آمیز", Toast.LENGTH_SHORT).show()
+                        val action =
+                            ProfileFragmentDirections.actionProfileFragmentToUploadImageFragment(
+                                response.body().toString()
+                            )
+                        navController.navigate(action)
                     }
 
                     override fun onFailure(call: Call<String>, t: Throwable) {
-                        Log.i("Error",t.toString())
+                        Log.i("Error", t.toString())
                         Toast.makeText(requireContext(), "نا موفقیت", Toast.LENGTH_SHORT).show()
                     }
                 })
